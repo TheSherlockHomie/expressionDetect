@@ -5,14 +5,14 @@ import time
 import glob
 import os
 
-webcamCapture = cv2.VideoCapture(0)
+
 
 haar_face_cascade = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_alt.xml") #initialize cascade classifier training
 haar_face_cascade_alt = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_alt_tree.xml")
 haar_face_cascade_alt2 = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_alt2.xml")
 haar_face_cascade_alt3 = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_default.xml")
 
-emotions = ["neutral", "anger", "disgust", "fear", "happy", "sadness", "surprise"] #initialize emotions
+emotions = ["neutral", "anger", "contempt", "disgust", "fear", "happy", "sadness", "surprise"] #initialize emotions
 
 fisherFace = cv2.face.FisherFaceRecognizer_create() #initialize fisher face classifier
 
@@ -135,6 +135,7 @@ def overlayEmoji(feed, faces, predictions):
         emotion = emotions[predictions[fNumber]]
         emojiToDraw = cv2.imread("graphics\\" + emotion + ".png")
         feed = drawEmoji(feed, emojiToDraw, (x, y, w, h))
+        # cv2.putText(feed, emotion, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (255, 320, 122))
         fNumber += 1
     return feed
 
@@ -144,15 +145,16 @@ def drawEmoji(feed, emojiToDraw, coordinates):
     feed[y:y + h, x:x + w ] = emojiToDraw
     return feed
 
-while True:
-    if args.update: #If update flag is present, call update function
-        updateModel()
-        break
-    trainClassifier()
-    frame, feed = getWebcamFrame()
-    faces = detectFace(frame)
-    predictions = predictEmotion(faces, frame)
-    feed = overlayEmoji(feed, faces, predictions)
-    cv2.imshow("Expression Detection", feed) #Display frame
-    if cv2.waitKey(1) & 0xFF == ord('q'): #imshow expects a termination definition to work correctly, here it is bound to key 'q'
-        break
+if args.update: #If update flag is present, call update function
+    updateModel()
+else:
+    update()
+    while True:
+        webcamCapture = cv2.VideoCapture(0)
+        frame, feed = getWebcamFrame()
+        faces = detectFace(frame)
+        predictions = predictEmotion(faces, frame)
+        feed = overlayEmoji(feed, faces, predictions)
+        cv2.imshow("Expression Detection", feed) #Display frame
+        if cv2.waitKey(1) & 0xFF == ord('q'): #imshow expects a termination definition to work correctly, here it is bound to key 'q'
+            break
