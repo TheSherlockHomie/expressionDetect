@@ -5,8 +5,6 @@ import time
 import glob
 import os
 
-
-
 haar_face_cascade = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_alt.xml") #initialize cascade classifier training
 haar_face_cascade_alt = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_alt_tree.xml")
 haar_face_cascade_alt2 = cv2.CascadeClassifier("cascade-classifiers\haarcascade_frontalface_alt2.xml")
@@ -19,7 +17,7 @@ fisherFace = cv2.face.FisherFaceRecognizer_create() #initialize fisher face clas
 # try:
 #     fisherFace.load("trainedClassifier.xml")
 # except:
-#     print("Pre-trained classifier XML not found. Using --update will create one.")
+#     raise Exception("Pre-trained classifier XML not found. Using --update will create one.")
 
 parser = argparse.ArgumentParser(description="Options for Expression Detector") #Create parser object
 parser.add_argument("--update", help="Call to grab new images and update the model accordingly", action="store_true") # Add --update argument
@@ -27,7 +25,7 @@ args = parser.parse_args() #Store any given arguments in an object
 
 faceDict = {}
 
-def getFiles(emotion): #get images files for the emotions
+def getFiles(emotion): #get image files for the emotions
     files = glob.glob("dataset\\" + emotion + "\\*")
     training = files[:]
     return training
@@ -135,7 +133,6 @@ def overlayEmoji(feed, faces, predictions):
         emotion = emotions[predictions[fNumber]]
         emojiToDraw = cv2.imread("graphics\\" + emotion + ".png")
         feed = drawEmoji(feed, emojiToDraw, (x, y, w, h))
-        # cv2.putText(feed, emotion, (x, y), cv2.FONT_HERSHEY_PLAIN, 1, (255, 320, 122))
         fNumber += 1
     return feed
 

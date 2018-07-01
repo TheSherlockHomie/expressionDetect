@@ -3,3 +3,4 @@ raw-dataset
 ckpSortFiles.py
 cleanNeutral.py
 temp.py
+.vscode/settings.json
