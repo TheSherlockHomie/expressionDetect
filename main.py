@@ -146,8 +146,8 @@ if args.update: #If update flag is present, call update function
     updateModel()
 else:
     update()
+    webcamCapture = cv2.VideoCapture(0)
     while True:
-        webcamCapture = cv2.VideoCapture(0)
         frame, feed = getWebcamFrame()
         faces = detectFace(frame)
         predictions = predictEmotion(faces, frame)
